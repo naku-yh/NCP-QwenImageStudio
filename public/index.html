@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NCP-QwenImage 生成器</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230071e3'/%3E%3Cpath d='M16 6l2.4 6.6L25 15l-6.6 2.4L16 24l-2.4-6.6L7 15l6.6-2.4z' fill='white'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<!-- ============ SVG 图标库 ============ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-wand" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/><path d="M5 17l.6 1.4L7 19l-1.4.6L5 21l-.6-1.4L3 19l1.4-.6z"/></symbol>
+  <symbol id="i-brush" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></symbol>
+  <symbol id="i-line" viewBox="0 0 24 24"><path d="M5 19 19 5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 19 19 5"/><path d="M12 5h7v7"/></symbol>
+  <symbol id="i-rect" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="1"/></symbol>
+  <symbol id="i-ellipse" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24"><path d="M5 6V4h14v2"/><path d="M12 4v16"/><path d="M9 20h6"/></symbol>
+  <symbol id="i-eraser" viewBox="0 0 24 24"><path d="m7 21-4-4a2 2 0 0 1 0-2.8L13.2 4a2 2 0 0 1 2.8 0l4 4a2 2 0 0 1 0 2.8L11 20"/><path d="M22 21H7"/><path d="m5 11 8 8"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="m3 3 18 18"/><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-2.3 3.2"/><path d="M6.6 6.6C3.7 8.6 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.7-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L5 21"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></symbol>
+</svg>
+
+<div class="app">
+
+  <!-- ============ 侧边栏 ============ -->
+  <aside class="sidebar">
+    <div class="app-brand">
+      <div class="app-logo"><svg class="icon"><use href="#i-wand"/></svg></div>
+      <div class="app-name">NCP-QwenImage<span>生成器</span></div>
+    </div>
+    <nav class="side-nav" aria-label="模式切换">
+      <button class="side-item active" data-mode="t2i"><svg class="icon"><use href="#i-wand"/></svg><span>文生图</span><kbd>1</kbd></button>
+      <button class="side-item" data-mode="edit"><svg class="icon"><use href="#i-brush"/></svg><span>图片编辑</span><kbd>2</kbd></button>
+      <button class="side-item" data-mode="multi"><svg class="icon"><use href="#i-layers"/></svg><span>多图生成</span><kbd>3</kbd></button>
+    </nav>
+    <div class="side-foot">
+      <button class="server-pill" id="serverPill" title="点击配置 API 服务器">
+        <span class="dot" id="srvDot"></span>
+        <span class="server-text">
+          <b id="srvState">正在检查服务…</b>
+          <i id="srvDetail">—</i>
+        </span>
+        <svg class="icon gear-mini"><use href="#i-gear"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ 主区域 ============ -->
+  <div class="main">
+
+    <!-- ======== 模式一:文生图 ======== -->
+    <section class="mode active" id="mode-t2i" data-persist="t2i">
+      <div class="controls">
+        <div class="card">
+          <div class="card-title">提示词</div>
+          <textarea id="t2iPrompt" rows="5" placeholder="描述想要的画面,中文直接输入。&#10;例如:一只戴巫师帽的水豚,油画风格,柔和光线"></textarea>
+        </div>
+        <div class="card">
+          <div class="card-title">画面尺寸 <span class="title-note" id="t2iSizeNote"></span></div>
+          <div class="field-row"><label>比例</label>
+            <div class="seg tight" id="t2iRatio">
+              <button data-r="1:1" class="active">1:1</button>
+              <button data-r="4:3">4:3</button>
+              <button data-r="3:4">3:4</button>
+              <button data-r="16:9">16:9</button>
+              <button data-r="9:16">9:16</button>
+            </div>
+          </div>
+          <div class="field-row"><label>分辨率</label>
+            <div class="seg" id="t2iResK">
+              <button data-k="1k" class="active">1K</button>
+              <button data-k="2k">2K</button>
+              <button data-k="custom">自定义</button>
+            </div>
+          </div>
+          <div class="size-row" id="t2iCustom" hidden>
+            <input type="number" id="t2iCW" min="256" max="2048" step="32" value="1024" aria-label="宽度">
+            <span class="times">×</span>
+            <input type="number" id="t2iCH" min="256" max="2048" step="32" value="1024" aria-label="高度">
+            <button class="icon-btn" id="t2iSwap" title="交换宽高"><svg class="icon"><use href="#i-swap"/></svg></button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">生成参数</div>
+          <div class="field-row"><label>数量</label>
+            <div class="seg nseg" id="t2iNSeg">
+              <button data-n="1" class="active">1</button><button data-n="2">2</button><button data-n="3">3</button><button data-n="4">4</button>
+            </div>
+            <input type="hidden" id="t2iN" value="1">
+          </div>
+          <div class="field-row"><label for="t2iSteps">步数</label>
+            <div class="range-row"><input type="range" id="t2iSteps" min="1" max="40" value="20"><output id="t2iStepsV">20</output></div>
+          </div>
+          <div class="field-row"><label for="t2iSeed">种子</label>
+            <div class="input-wrap">
+              <input type="number" id="t2iSeed" min="0" placeholder="留空 = 随机">
+              <button class="icon-btn" id="t2iSeedRandom" title="随机种子"><svg class="icon"><use href="#i-shuffle"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <details class="card adv">
+          <summary>高级参数</summary>
+          <div class="adv-body">
+            <label class="lbl">负向提示词</label>
+            <textarea id="t2iNeg" rows="2" placeholder="不希望出现的内容(填写后启用负向引导)"></textarea>
+            <div class="field-row"><label for="t2iCfg">引导强度</label>
+              <div class="range-row"><input type="range" id="t2iCfg" min="1" max="10" step="0.5" value="4"><output id="t2iCfgV">4.0</output></div>
+            </div>
+            <div class="field-row"><label>透明背景</label>
+              <label class="switch"><input type="checkbox" id="t2iAlpha"><i></i></label>
+            </div>
+          </div>
+        </details>
+        <button class="btn btn-primary btn-generate" id="t2iGen">
+          <svg class="icon"><use href="#i-wand"/></svg><span>生成图像</span>
+        </button>
+        <p class="hint">参考耗时:1K 约 30 秒,2K 约 70 秒。任务在服务器串行执行。</p>
+      </div>
+      <div class="stage" id="stage-t2i">
+        <div class="stage-empty" id="t2iEmpty">
+          <svg class="icon big"><use href="#i-wand"/></svg>
+          <h3>从一句描述开始</h3>
+          <p>输入提示词,点击左侧「生成图像」。生成结果会同时存入下方历史记录。</p>
+        </div>
+        <div class="result-grid" id="t2iResult" hidden></div>
+      </div>
+    </section>
+
+    <!-- ======== 模式二:图片编辑(带标注) ======== -->
+    <section class="mode" id="mode-edit" data-persist="edit">
+      <div class="controls">
+        <div class="card">
+          <div class="card-title">输入图片</div>
+          <div class="file-chip" id="editFileChip" hidden>
+            <svg class="icon"><use href="#i-image"/></svg>
+            <div class="file-meta"><b id="editFileName">—</b><i id="editFileDims">—</i></div>
+            <button class="icon-btn" id="editReplaceBtn" title="更换图片"><svg class="icon"><use href="#i-shuffle"/></svg></button>
+            <button class="icon-btn danger" id="editRemoveBtn" title="移除图片"><svg class="icon"><use href="#i-trash"/></svg></button>
+          </div>
+          <button class="dropzone dropzone-sm" id="editPick">
+            <svg class="icon"><use href="#i-upload"/></svg>
+            <b>选择或拖入图片</b>
+            <i>也可以直接 ⌘V 粘贴</i>
+          </button>
+          <input type="file" id="editFile" accept="image/*" hidden>
+        </div>
+        <div class="card">
+          <div class="card-title">编辑指令</div>
+          <textarea id="editPrompt" rows="4" placeholder="告诉模型要怎么改。&#10;例如:把背景换成夕阳海滩;把红圈里的人删掉;按箭头方向延伸建筑"></textarea>
+          <p class="hint">配合标注效果更好:用红圈、箭头指向要修改的位置,模型会理解这些标记。</p>
+        </div>
+        <div class="card">
+          <div class="card-title">参数 <span class="title-note" id="editSizeNote"></span></div>
+          <div class="field-row"><label for="editSteps">步数</label>
+            <div class="range-row"><input type="range" id="editSteps" min="1" max="40" value="15"><output id="editStepsV">15</output></div>
+          </div>
+          <div class="field-row"><label>输出比例</label>
+            <div class="seg tight" id="editRatio">
+              <button data-r="auto" class="active">原图</button>
+              <button data-r="1:1">1:1</button>
+              <button data-r="4:3">4:3</button>
+              <button data-r="3:4">3:4</button>
+              <button data-r="16:9">16:9</button>
+              <button data-r="9:16">9:16</button>
+            </div>
+          </div>
+          <div class="field-row"><label>分辨率</label>
+            <div class="seg" id="editResK">
+              <button data-k="1k" class="active">1K</button>
+              <button data-k="2k">2K</button>
+              <button data-k="custom">自定义</button>
+            </div>
+          </div>
+          <div class="size-row" id="editCustom" hidden>
+            <input type="number" id="editCW" min="256" max="2048" step="32" value="1024" aria-label="宽度">
+            <span class="times">×</span>
+            <input type="number" id="editCH" min="256" max="2048" step="32" value="1024" aria-label="高度">
+          </div>
+          <p class="hint">「原图」按已载入图片的宽高比推导。编辑建议 1K(2K 约 12 分钟);自定义上限 2048。</p>
+        </div>
+        <button class="btn btn-primary btn-generate" id="editGen">
+          <svg class="icon"><use href="#i-brush"/></svg><span>开始编辑</span>
+        </button>
+      </div>
+      <div class="stage annotator-stage" id="stage-edit">
+        <div class="stage-empty" id="editEmpty">
+          <svg class="icon big"><use href="#i-brush"/></svg>
+          <h3>载入图片后即可标注</h3>
+          <p>拖入 / 粘贴 / 点击选择图片,用画笔、箭头、文字在图上圈出要修改的地方,再输入编辑指令。</p>
+          <button class="btn btn-secondary" id="editPick2">选择图片</button>
+        </div>
+        <div class="stage-body" id="editStageBody" hidden>
+          <div class="stage-toolbar" id="editToolbar">
+            <div class="tool-group" role="toolbar" aria-label="标注工具">
+              <button class="tool-btn active" data-tool="brush" title="画笔 (B)"><svg class="icon"><use href="#i-brush"/></svg></button>
+              <button class="tool-btn" data-tool="line" title="直线 (L)"><svg class="icon"><use href="#i-line"/></svg></button>
+              <button class="tool-btn" data-tool="arrow" title="箭头 (A)"><svg class="icon"><use href="#i-arrow"/></svg></button>
+              <button class="tool-btn" data-tool="rect" title="矩形 (R)"><svg class="icon"><use href="#i-rect"/></svg></button>
+              <button class="tool-btn" data-tool="ellipse" title="椭圆 (O)"><svg class="icon"><use href="#i-ellipse"/></svg></button>
+              <button class="tool-btn" data-tool="text" title="文字 (T)"><svg class="icon"><use href="#i-text"/></svg></button>
+              <button class="tool-btn" data-tool="eraser" title="橡皮 (E)"><svg class="icon"><use href="#i-eraser"/></svg></button>
+            </div>
+            <div class="swatches" id="editColors">
+              <button class="swatch active" data-color="#ff3b30" style="--c:#ff3b30" title="红色(推荐)"></button>
+              <button class="swatch" data-color="#ff9500" style="--c:#ff9500" title="橙色"></button>
+              <button class="swatch" data-color="#ffd60a" style="--c:#ffd60a" title="黄色"></button>
+              <button class="swatch" data-color="#34c759" style="--c:#34c759" title="绿色"></button>
+              <button class="swatch" data-color="#0a84ff" style="--c:#0a84ff" title="蓝色"></button>
+              <button class="swatch" data-color="#ffffff" style="--c:#ffffff" title="白色"></button>
+              <label class="swatch custom" title="自定义颜色"><input type="color" id="editCustomColor" value="#ff3b30"></label>
+            </div>
+            <div class="range-row stroke-slider" title="线宽">
+              <span class="lbl-mini">线宽</span>
+              <input type="range" id="editWidth" min="2" max="48" value="10"><output id="editWidthV">10</output>
+            </div>
+            <label class="fontsel" title="文字大小">
+              <span class="lbl-mini">字号</span>
+              <select id="editFont">
+                <option value="20">20</option><option value="28">28</option>
+                <option value="36" selected>36</option><option value="48">48</option><option value="72">72</option>
+              </select>
+            </label>
+            <span class="toolbar-sep"></span>
+            <button class="icon-btn" id="editUndo" title="撤销 (⌘Z)" disabled><svg class="icon"><use href="#i-undo"/></svg></button>
+            <button class="icon-btn" id="editRedo" title="重做 (⇧⌘Z)" disabled><svg class="icon"><use href="#i-redo"/></svg></button>
+            <button class="icon-btn" id="editShow" title="显示 / 隐藏标注(仅预览,提交时仍会包含)"><svg class="icon"><use href="#i-eye"/></svg></button>
+            <button class="icon-btn danger" id="editClear" title="清空标注" disabled><svg class="icon"><use href="#i-trash"/></svg></button>
+            <span class="ann-badge" id="editAnnBadge">标注 0</span>
+          </div>
+          <div class="annotator-wrap" id="editCanvasWrap"></div>
+        </div>
+        <div class="result-card" id="editResultCard" hidden></div>
+      </div>
+    </section>
+
+    <!-- ======== 模式三:多图生成(带标注) ======== -->
+    <section class="mode" id="mode-multi" data-persist="multi">
+      <div class="controls">
+        <div class="card">
+          <div class="card-title">参考图片 <span class="title-note" id="multiCount">0 / 10</span></div>
+          <div class="multi-list" id="multiList"></div>
+          <button class="dropzone dropzone-sm" id="multiPick">
+            <svg class="icon"><use href="#i-plus"/></svg>
+            <b>添加图片</b>
+            <i>可多选,也可拖拽 / 粘贴</i>
+          </button>
+          <input type="file" id="multiFile" accept="image/*" multiple hidden>
+          <p class="hint">多张图作为参考(人物 / 商品一致性)。点击缩略图可在右侧标注。</p>
+        </div>
+        <div class="card">
+          <div class="card-title">生成指令</div>
+          <textarea id="multiPrompt" rows="4" placeholder="描述如何组合参考图。&#10;例如:把第一张图里的人物放到第二张图的场景中,保持人物特征一致"></textarea>
+        </div>
+        <div class="card">
+          <div class="card-title">参数 <span class="title-note" id="multiSizeNote"></span></div>
+          <div class="field-row"><label for="multiSteps">步数</label>
+            <div class="range-row"><input type="range" id="multiSteps" min="1" max="40" value="15"><output id="multiStepsV">15</output></div>
+          </div>
+          <div class="field-row"><label>输出比例</label>
+            <div class="seg tight" id="multiRatio">
+              <button data-r="auto" class="active">原图</button>
+              <button data-r="1:1">1:1</button>
+              <button data-r="4:3">4:3</button>
+              <button data-r="3:4">3:4</button>
+              <button data-r="16:9">16:9</button>
+              <button data-r="9:16">9:16</button>
+            </div>
+          </div>
+          <div class="field-row"><label>分辨率</label>
+            <div class="seg" id="multiResK">
+              <button data-k="1k" class="active">1K</button>
+              <button data-k="2k">2K</button>
+              <button data-k="custom">自定义</button>
+            </div>
+          </div>
+          <div class="size-row" id="multiCustom" hidden>
+            <input type="number" id="multiCW" min="256" max="2048" step="32" value="1024" aria-label="宽度">
+            <span class="times">×</span>
+            <input type="number" id="multiCH" min="256" max="2048" step="32" value="1024" aria-label="高度">
+          </div>
+          <p class="hint">「原图」按最后一张参考图的宽高比推导;自定义上限 2048。</p>
+        </div>
+        <button class="btn btn-primary btn-generate" id="multiGen">
+          <svg class="icon"><use href="#i-layers"/></svg><span>开始生成</span>
+        </button>
+      </div>
+      <div class="stage annotator-stage" id="stage-multi">
+        <div class="stage-empty" id="multiEmpty">
+          <svg class="icon big"><use href="#i-layers"/></svg>
+          <h3>添加参考图开始创作</h3>
+          <p>上传多张参考图,分别标注要点,描述组合方式后生成新图。</p>
+          <button class="btn btn-secondary" id="multiPick2">添加图片</button>
+        </div>
+        <div class="stage-body" id="multiStageBody" hidden>
+          <div class="stage-toolbar" id="multiToolbar">
+            <span class="cur-file" id="multiCurFile">—</span>
+            <div class="tool-group" role="toolbar" aria-label="标注工具">
+              <button class="tool-btn active" data-tool="brush" title="画笔 (B)"><svg class="icon"><use href="#i-brush"/></svg></button>
+              <button class="tool-btn" data-tool="line" title="直线 (L)"><svg class="icon"><use href="#i-line"/></svg></button>
+              <button class="tool-btn" data-tool="arrow" title="箭头 (A)"><svg class="icon"><use href="#i-arrow"/></svg></button>
+              <button class="tool-btn" data-tool="rect" title="矩形 (R)"><svg class="icon"><use href="#i-rect"/></svg></button>
+              <button class="tool-btn" data-tool="ellipse" title="椭圆 (O)"><svg class="icon"><use href="#i-ellipse"/></svg></button>
+              <button class="tool-btn" data-tool="text" title="文字 (T)"><svg class="icon"><use href="#i-text"/></svg></button>
+              <button class="tool-btn" data-tool="eraser" title="橡皮 (E)"><svg class="icon"><use href="#i-eraser"/></svg></button>
+            </div>
+            <div class="swatches" id="multiColors">
+              <button class="swatch active" data-color="#ff3b30" style="--c:#ff3b30" title="红色(推荐)"></button>
+              <button class="swatch" data-color="#ff9500" style="--c:#ff9500" title="橙色"></button>
+              <button class="swatch" data-color="#ffd60a" style="--c:#ffd60a" title="黄色"></button>
+              <button class="swatch" data-color="#34c759" style="--c:#34c759" title="绿色"></button>
+              <button class="swatch" data-color="#0a84ff" style="--c:#0a84ff" title="蓝色"></button>
+              <button class="swatch" data-color="#ffffff" style="--c:#ffffff" title="白色"></button>
+              <label class="swatch custom" title="自定义颜色"><input type="color" id="multiCustomColor" value="#ff3b30"></label>
+            </div>
+            <div class="range-row stroke-slider" title="线宽">
+              <span class="lbl-mini">线宽</span>
+              <input type="range" id="multiWidth" min="2" max="48" value="10"><output id="multiWidthV">10</output>
+            </div>
+            <label class="fontsel" title="文字大小">
+              <span class="lbl-mini">字号</span>
+              <select id="multiFont">
+                <option value="20">20</option><option value="28">28</option>
+                <option value="36" selected>36</option><option value="48">48</option><option value="72">72</option>
+              </select>
+            </label>
+            <span class="toolbar-sep"></span>
+            <button class="icon-btn" id="multiUndo" title="撤销 (⌘Z)" disabled><svg class="icon"><use href="#i-undo"/></svg></button>
+            <button class="icon-btn" id="multiRedo" title="重做 (⇧⌘Z)" disabled><svg class="icon"><use href="#i-redo"/></svg></button>
+            <button class="icon-btn" id="multiShow" title="显示 / 隐藏标注(仅预览,提交时仍会包含)"><svg class="icon"><use href="#i-eye"/></svg></button>
+            <button class="icon-btn danger" id="multiClear" title="清空标注" disabled><svg class="icon"><use href="#i-trash"/></svg></button>
+            <span class="ann-badge" id="multiAnnBadge">标注 0</span>
+          </div>
+          <div class="annotator-wrap" id="multiCanvasWrap"></div>
+        </div>
+        <div class="result-card" id="multiResultCard" hidden></div>
+      </div>
+    </section>
+
+    <!-- ======== 历史记录 ======== -->
+    <div class="history-dock">
+      <div class="dock-head">
+        <b>最近生成</b><span class="dock-count" id="histCount">0</span>
+        <button class="link-btn" id="histClear">清空</button>
+      </div>
+      <div class="dock-grid" id="histGrid">
+        <div class="dock-empty" id="histEmpty">生成的图片会出现在这里</div>
+      </div>
+    </div>
+
+    <!-- ======== 全局任务遮罩 ======== -->
+    <div class="main-running" id="mainRunning" hidden>
+      <div class="running-card">
+        <div class="spinner"></div>
+        <b id="runLabel">正在生成</b>
+        <span id="runElapsed">0.0 秒</span>
+        <i id="runQueue">—</i>
+        <button class="btn btn-secondary btn-sm" id="runCancel">停止等待</button>
+        <p class="running-note">停止等待只是不再盯进度,服务器上的任务仍会执行完毕。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 设置弹层 ============ -->
+<div class="overlay" id="settingsOverlay" hidden>
+  <div class="sheet" role="dialog" aria-label="设置">
+    <div class="sheet-head"><b>服务器设置</b>
+      <button class="icon-btn" id="setClose" title="关闭"><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <label class="lbl">API 服务器地址</label>
+    <input type="text" id="setBase" placeholder="http://192.168.31.30:8100" spellcheck="false">
+    <label class="lbl">API 密钥(未设置 QWEN_API_KEY 可留空)</label>
+    <input type="password" id="setKey" placeholder="留空表示无需鉴权" spellcheck="false">
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" id="setTest">测试连接</button>
+      <span class="test-result" id="setTestResult"></span>
+      <span class="flex-sp"></span>
+      <button class="btn btn-primary" id="setSave">保存</button>
+    </div>
+    <p class="hint">请求经由本机网关(server.py)转发,浏览器无需 CORS 配置。</p>
+  </div>
+</div>
+
+<!-- ============ 灯箱 ============ -->
+<div class="overlay" id="lightbox" hidden>
+  <div class="lb-card">
+    <button class="lb-close icon-btn" id="lbClose" title="关闭 (Esc)"><svg class="icon"><use href="#i-x"/></svg></button>
+    <div class="lb-img-area">
+      <img id="lbImg" alt="生成结果">
+      <button class="lb-nav prev icon-btn" id="lbPrev" hidden title="上一张"><svg class="icon"><use href="#i-chev-l"/></svg></button>
+      <button class="lb-nav next icon-btn" id="lbNext" hidden title="下一张"><svg class="icon"><use href="#i-chev-r"/></svg></button>
+      <span class="lb-index" id="lbIndex" hidden></span>
+    </div>
+    <aside class="lb-side">
+      <span class="mode-chip" id="lbMode">文生图</span>
+      <div class="lb-prompt" id="lbPrompt"></div>
+      <dl class="lb-meta" id="lbMeta"></dl>
+      <div class="lb-actions">
+        <button class="btn btn-secondary btn-sm" id="lbDownload"><svg class="icon"><use href="#i-download"/></svg>下载</button>
+        <button class="btn btn-secondary btn-sm" id="lbOpen"><svg class="icon"><use href="#i-external"/></svg>原图</button>
+        <button class="btn btn-secondary btn-sm" id="lbToEdit"><svg class="icon"><use href="#i-brush"/></svg>去编辑</button>
+        <button class="btn btn-secondary btn-sm" id="lbToMulti"><svg class="icon"><use href="#i-plus"/></svg>加多图</button>
+        <button class="btn btn-secondary btn-sm" id="lbCopy"><svg class="icon"><use href="#i-copy"/></svg>复制提示词</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
